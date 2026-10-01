@@ -1,1 +1,1 @@
-{"cpu_seconds":0.11549194100000004,"errors":[],"failures":[],"peak_rss_kib":96300,"skipped":[],"successful":true,"tests":16,"wall_seconds":0.11673653699995157,"workers":1}
+{"cpu_seconds":0.209152263,"errors":[],"failures":[],"peak_rss_kib":95144,"skipped":[],"successful":true,"tests":16,"wall_seconds":3.2415324050000436,"workers":1}

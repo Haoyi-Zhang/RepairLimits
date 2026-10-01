@@ -53,6 +53,15 @@ execution; slower systems can hit the fixed 40-CPU-second limit. Such terminatio
 is **unknown**, never proof of infeasibility. BDD node caps are deliberately not
 raised to turn unfavorable outcomes into successes.
 
+The CLI distinguishes phases. Malformed JSON, schema violations, and invalid
+semantic evidence return exit code 2 with `status: rejected`; a declared search
+cap, memory exhaustion, or call-stack exhaustion during semantic execution
+returns exit code 3 with `status: unknown-resource`. The error JSON includes a
+`stage` field (`input-validation`, `semantic-validation`, or `semantic-search`).
+The compatible-path oracle's cross-world depth-first search uses explicit stack
+frames, so the declared 1,024-world interface does not depend on CPython's
+default recursion depth.
+
 ## Evidence and limits
 
 `results/chunks/` holds raw outcomes and resource observations. `results/summary.json`
@@ -69,6 +78,15 @@ All abstract two-choice games retain individual outcomes. Guarded deletion
 checks retain deleted identifiers and checked values; their full certificates
 are regenerated rather than duplicated. Implicit input specifications, including
 full-domain dimensions and affine premises, are under `inputs/implicit/`.
+`inputs/regression/oracle-1024-no-faults.json` is the retained maximum-world
+boundary fixture. `results/oracle-1024-boundary-pre-fix.json` preserves the
+observed original failure, while `results/oracle-1024-boundary-regression.json`
+records the repaired solver/checker/oracle agreement and CLI status checks.
+`results/oracle-1024-existing-evidence-comparison.json` verifies that the
+previous campaign evidence remained unchanged apart from rerun resource fields.
+The repaired standalone ZIP was also executed from a fresh extraction through
+all 100 fixed chunks and final audit; the comparison summary is embedded in
+`results/oracle-1024-boundary-regression.json`.
 
 The synthesis VM and checking VM are separately written. The path oracle shares
 the checking VM: there are not three independent semantic implementations.

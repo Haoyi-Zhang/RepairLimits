@@ -55,3 +55,11 @@ monotonicity this implies all proper subsets are feasible. Minimum means no
 smaller unsatisfiable subset exists anywhere in the original domain. The
 ordinary deletion routine provides only inclusion-minimality. The full-domain
 minimum conclusion comes from the unique-failure theorem, not that routine.
+
+The compatible-path oracle enumerates paths within each world and combines one
+path per world subject to history/action compatibility. Its cross-world search
+uses explicit depth-first frames rather than one Python call frame per world.
+The retained 1,024-world no-fault fixture therefore exercises the maximum
+explicit world count under the default CPython recursion limit. CLI rejection
+is reserved for malformed inputs or invalid evidence; resource or stack
+exhaustion during a valid semantic search is reported as `unknown-resource`.

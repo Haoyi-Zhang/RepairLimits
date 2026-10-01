@@ -1,5 +1,6 @@
 """Deterministic semantic and negative-evidence checks, not deployed software tests."""
-import copy,itertools,json,unittest
+import copy,itertools,json,subprocess,sys,tempfile,unittest
+from pathlib import Path
 from repair.model import (validate,State,initial,advance,act,event,observe,actions,loss)
 from repair.check import (Machine,start,run,options,observation,distance,
                           check_certificate,policy_replay,strict_json)
@@ -58,6 +59,40 @@ class SchemaTests(unittest.TestCase):
             with self.assertRaises(ValueError):synthesize(c,node_limit=n)
         s,p=guarded_spec(3)
         with self.assertRaises(RuntimeError):classify_contract(s,p,node_limit=2)
+
+        # The maximum declared explicit-world count must not depend on the host
+        # recursion limit when each world contributes a single compatible path.
+        root=Path(__file__).resolve().parents[1]
+        boundary=root/'inputs'/'regression'/'oracle-1024-no-faults.json'
+        result=exact_oracle(json.loads(boundary.read_text()))
+        self.assertEqual(result,{'value':0,'hindsight':0,'path_count':1024,'combinations':1024})
+
+        def cli(*args):
+            return subprocess.run([sys.executable,'-m','repair.cli',*map(str,args)],
+                                  cwd=root,text=True,capture_output=True,check=False)
+        with tempfile.TemporaryDirectory() as td:
+            td=Path(td)
+            normal=root/'inputs'/'correlated-xor.json'
+            solved=cli('solve',normal)
+            self.assertEqual((solved.returncode,json.loads(solved.stdout)['value']),(0,0))
+            certificate=td/'certificate.json';certificate.write_text(solved.stdout)
+            checked=cli('check',normal,certificate)
+            self.assertEqual((checked.returncode,json.loads(checked.stdout)['check']['value']),(0,0))
+            oracle=cli('oracle',normal)
+            self.assertEqual((oracle.returncode,json.loads(oracle.stdout)['value']),(0,0))
+
+            bounded=cli('symbolic',root/'inputs'/'implicit'/'guarded-20-mixed.json',
+                        '--order','actions-first')
+            bounded_error=json.loads(bounded.stderr)
+            self.assertEqual(bounded.returncode,3)
+            self.assertEqual((bounded_error['status'],bounded_error['stage']),
+                             ('unknown-resource','semantic-search'))
+
+            malformed=root/'inputs'/'regression'/'malformed-missing-fields.json'
+            rejected=cli('solve',malformed);rejected_error=json.loads(rejected.stderr)
+            self.assertEqual(rejected.returncode,2)
+            self.assertEqual((rejected_error['status'],rejected_error['stage']),
+                             ('rejected','input-validation'))
 
 
 class InstructionTests(unittest.TestCase):

@@ -8,6 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import json
 from .model import validate,integer
+from .errors import ResourceExhausted
 
 
 def strict_json(text: str) -> dict:
@@ -115,7 +116,7 @@ def check_certificate(c: dict, cert: dict, max_nodes=200000) -> dict:
         states = tuple((k,run(c,ws[k],m)) for k,m in states)
         key = (nid,states)
         if key in checked: return checked[key]
-        if len(checked)+len(active) >= max_nodes: raise RuntimeError('semantic-check budget exceeded')
+        if len(checked)+len(active) >= max_nodes: raise ResourceExhausted('semantic-check budget exceeded')
         if nid in active: raise ValueError('cycle')
         active.add(nid); visited.add(nid)
         node = nodes[nid]

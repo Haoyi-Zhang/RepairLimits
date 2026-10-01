@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from copy import deepcopy
 from .model import State, validate, integer, initial, advance, event, observe, actions, act, loss
+from .errors import ResourceExhausted
 
 
 def synthesize(c: dict, node_limit: int = 200000) -> dict:
@@ -14,7 +15,7 @@ def synthesize(c: dict, node_limit: int = 200000) -> dict:
     def visit(entries: tuple[tuple[str,State],...]) -> str:
         normalized = tuple((k,advance(c,worlds[k],s)) for k,s in entries)
         if normalized in cache: return cache[normalized]
-        if len(nodes) >= node_limit: raise RuntimeError('certificate node limit')
+        if len(nodes) >= node_limit: raise ResourceExhausted('certificate node limit')
         nid = str(len(nodes)); cache[normalized] = nid; nodes[nid] = {}
         groups = defaultdict(list)
         for k,s in normalized: groups[observe(c,s)].append((k,s))

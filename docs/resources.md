@@ -43,6 +43,29 @@ difference remained. The retained evidence is the clean-run output itself, and
 configurations remain `unknown-node-cap`; resource exhaustion was not relabeled
 as infeasibility.
 
+## Explicit-world oracle boundary regression (2026-09-25)
+
+Under Linux/CPython with the default recursion limit of 1,000, the retained
+one-bit fixture with one register, ten heap cells, the single instruction
+`emit 0`, unit Hamming weight, zero budget, and all 1,024 distinct ten-bit
+initial memories first returned exit code 2 with `status: rejected` and
+`maximum recursion depth exceeded`. This is an observed pre-repair result, not
+a static inference. Each world has no fault and exactly one execution path;
+thus the failure occurred in cross-world path selection rather than path or
+combination-cap exhaustion.
+
+After replacing the one-call-per-world selector with an explicit depth-first
+stack, the same fixture returns value zero from synthesis, certificate checking,
+and the compatible-path oracle. The checker replays all 1,024 worlds at zero
+loss; the oracle records 1,024 paths and 1,024 attempted combinations. A fixed
+symbolic node-cap case returns exit code 3 with `unknown-resource` at stage
+`semantic-search`, while a missing-fields input returns exit code 2 with
+`rejected` at stage `input-validation`. The 16 assurance groups pass, and the
+final audit recomputes the existing 374 certificates/replays and 349 stored
+exact-oracle comparisons without a scientific mismatch. Raw command outputs
+are retained in `results/oracle-1024-boundary-pre-fix.json` and
+`results/oracle-1024-boundary-regression.json`.
+
 ## Acquisition and interpretation boundary
 
 No experimental dataset or executable baseline was downloaded. The supplied

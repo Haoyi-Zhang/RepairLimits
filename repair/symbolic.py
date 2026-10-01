@@ -5,6 +5,7 @@ symbolic execution; supplied formula labels and matrices are not trusted.
 This is an executable checker, not a theorem-prover mechanization.
 """
 from .model import validate, integer
+from .errors import ResourceExhausted
 
 
 class BDD:
@@ -20,7 +21,7 @@ class BDD:
         if low == high: return low
         key = (variable,low,high)
         if key in self.unique: return self.unique[key]
-        if len(self.nodes) >= self.cap: raise RuntimeError('BDD node budget exceeded')
+        if len(self.nodes) >= self.cap: raise ResourceExhausted('BDD node budget exceeded')
         k = len(self.nodes)
         self.nodes.append(key)
         self.unique[key] = k
