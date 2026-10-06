@@ -53,6 +53,19 @@ execution; slower systems can hit the fixed 40-CPU-second limit. Such terminatio
 is **unknown**, never proof of infeasibility. BDD node caps are deliberately not
 raised to turn unfavorable outcomes into successes.
 
+The current assurance suite has 18 test groups. The retained POSIX campaign
+records 16; two added observation-boundary groups exercise six guarded program
+variants without changing the frozen cohort counts. They distinguish a value
+overwritten before a decision from one saved in another visible register.
+
+For the flat standalone repository, `.github/workflows/scientific-checks.yml`
+prepares the same complete campaign on Ubuntu 24.04 for pushes to `main` and
+manual dispatch. It uses a 15-minute whole-campaign wall limit, the existing
+per-process limits and fixed diagram caps, strict coverage gates, and an
+always-run upload of the nonhidden `raw-output/` logs and `results/` tree. This
+workflow is prepared configuration, not a record of a hosted run. The separate
+repository-integrity workflow checks source syntax and materials only.
+
 The CLI distinguishes phases. Malformed JSON, schema violations, and invalid
 semantic evidence return exit code 2 with `status: rejected`; a declared search
 cap, memory exhaustion, or call-stack exhaustion during semantic execution
