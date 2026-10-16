@@ -92,6 +92,12 @@ not counted as passed.
 
 ## Provenance and license
 
+The manuscript's observation-timing witness can be drawn independently with
+`python -B figures/draw_timing.py --outdir figures` after installing Matplotlib.
+It preserves the shared-prefix branch conditions and emits embedded-font vector
+PDF without a LaTeX drawing subprocess. This optional drawing dependency is
+separate from the standard-library semantic evaluator.
+
 Original code, generated data, and original documentation use [LICENSE](LICENSE).
 Literature attribution is in `external_resources.csv`; the claim-evidence
 ledger maps results to proofs and outputs. The metadata-verification CSV is a
