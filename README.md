@@ -104,6 +104,4 @@ ledger maps results to proofs and outputs. The metadata-verification CSV is a
 bounded metadata record, not full-text certification. No third-party paper or
 implementation is redistributed.
 
-An AI research executor contributed to the implementations. Their separate
-source code is not independent authorship or external review. The artifact
-contains no human experiment or real faulting-application deployment.
+The artifact contains no human experiment or real faulting-application deployment.
